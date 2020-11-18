@@ -29,6 +29,7 @@ public class Term extends JPanel {
 	public Term(String var) {
 		//Initalize panel utilizing the GridBag layout 
 		super(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 
 		//Initalize model variables
 		this.exponent = 1;
@@ -41,7 +42,6 @@ public class Term extends JPanel {
 		SpinnerNumberModel coefficientNumberModel = new SpinnerNumberModel(this.coefficient, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 		this.coefficientArea = new JSpinner(coefficientNumberModel);
 		this.variableArea = new JLabel(this.variable);
-		GridBagConstraints c = new GridBagConstraints();
 		
 		//Set half height font
 		Font exponentFont = exponentArea.getFont();

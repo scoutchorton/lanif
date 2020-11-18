@@ -1,10 +1,9 @@
 package io.scoutchorton.lanif;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.scoutchorton.lanif.components.Term;
+import io.scoutchorton.lanif.components.Polynomial;
 
 public class Lanif extends JFrame {
 	public Lanif(String title) {
@@ -12,21 +11,15 @@ public class Lanif extends JFrame {
 	}
 
 	public static void initGUI() {
+		//Create window and panel to add elements to
 		Lanif win = new Lanif("LANIF");
 		JPanel contentPane = new JPanel();
 
-		Term t1 = new Term();
-		Term t2 = new Term();
-		Term t3 = new Term();
-		Term t4 = new Term();
-		contentPane.add(t1);
-		contentPane.add(new JLabel("+"));
-		contentPane.add(t2);
-		contentPane.add(new JLabel("+"));
-		contentPane.add(t3);
-		contentPane.add(new JLabel("+"));
-		contentPane.add(t4);
+		//Create and add Polynomial
+		Polynomial defPolynomial = new Polynomial();
+		contentPane.add(defPolynomial);
 
+		//Set up and open window
 		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setContentPane(contentPane);
 		win.pack();
