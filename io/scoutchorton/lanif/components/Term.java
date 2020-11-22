@@ -5,12 +5,17 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-public class Term extends JPanel {
+public class Term extends JPanel implements MouseListener {
+	/**
+	 * Fields
+	 */
 	//Exponent
 	protected int exponent;
 	protected JSpinner exponentArea;
@@ -23,6 +28,9 @@ public class Term extends JPanel {
 	protected String variable;
 	protected JLabel variableArea;
 
+	/**
+	 * Constructors
+	 */
 	public Term() {
 		this("x");
 	}
@@ -37,10 +45,14 @@ public class Term extends JPanel {
 		this.variable = var;
 
 		//Initalize view variables
-		SpinnerNumberModel exponentNumberModel = new SpinnerNumberModel(this.exponent, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+		SpinnerNumberModel exponentNumberModel = new SpinnerNumberModel();
+		exponentNumberModel.setValue(this.exponent);
 		this.exponentArea = new JSpinner(exponentNumberModel);
-		SpinnerNumberModel coefficientNumberModel = new SpinnerNumberModel(this.coefficient, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+
+		SpinnerNumberModel coefficientNumberModel = new SpinnerNumberModel();
+		coefficientNumberModel.setValue(this.coefficient);
 		this.coefficientArea = new JSpinner(coefficientNumberModel);
+		
 		this.variableArea = new JLabel(this.variable);
 		
 		//Set half height font
@@ -49,13 +61,36 @@ public class Term extends JPanel {
 		exponentArea.setFont(newExponentFont);
 
 		//Add components to JPanel
+		c.anchor = GridBagConstraints.LINE_END;
 		this.add(this.coefficientArea, c);
+
 		c.insets = new Insets(0, 10, 0, 5);
 		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.LINE_END;
 		this.add(this.variableArea, c);
+		
 		c.insets = new Insets(0, 0, 0, 0);
 		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.NORTH;
+		c.anchor = GridBagConstraints.FIRST_LINE_END;
 		this.add(this.exponentArea, c);
+	}
+
+	/**
+	 * MouseListener
+	 */
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("mouseClicked: " + e.getComponent().toString());
+	}
+	public void mouseEntered(MouseEvent e) {
+		//System.out.println("mouseEntered: " + e.getComponent().toString());
+	}
+	public void mouseExited(MouseEvent e) {
+		//System.out.println("mouseExited: " + e.getComponent().toString());
+	}
+	public void mousePressed(MouseEvent e) {
+		//System.out.println("mousePressed: " + e.getComponent().toString());
+	}
+	public void mouseReleased(MouseEvent e) {
+		//System.out.println("mouseReleased: " + e.getComponent().toString());
 	}
 }
