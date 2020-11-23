@@ -8,10 +8,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-//import java.awt.GridBagLayout;
-//import java.awt.GridBagConstraints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.Window;
 
 import java.util.ArrayList;
 
@@ -21,20 +20,34 @@ public class Polynomial extends JPanel implements MouseListener {
 	 */
 	private ArrayList<Term> terms;
 	private Term selectedTerm;
+	public Boolean termSelected;
+	private String variable;
 
 	/**
 	 * Constructors
 	 */
 	public Polynomial() {
-		this(0);
+		this(0, "x");
+	}
+	public Polynomial(String variable) {
+		this(0, variable);
 	}
 	public Polynomial(int numTerms) {
+		this(numTerms, "x");
+	}
+	public Polynomial(int numTerms, String var) {
 		//Initalize panel
 		super();
 
 		//Initalize fields
 		terms = new ArrayList<Term>();
 		selectedTerm = null;
+		variable = var;
+
+		//Add a Term to give the Polynomial some content
+		for(int index = 0; index < numTerms; index++) {
+			addTerm();
+		}
 
 		//Add event listeners
 		addMouseListener(this);
@@ -51,7 +64,7 @@ public class Polynomial extends JPanel implements MouseListener {
 		}
 
 		//Create new Term and contraints
-		Term newTerm = new Term();
+		Term newTerm = new Term(variable);
 
 		//Add new Term to window
 		terms.add(newTerm);
@@ -60,45 +73,68 @@ public class Polynomial extends JPanel implements MouseListener {
 		revalidate();
 
 		//Update window size on change between zero and one term
-		if(terms.size() <= 1)
-			SwingUtilities.getWindowAncestor(this).pack();
+		if(terms.size() <= 1) {
+			Window win = SwingUtilities.getWindowAncestor(this);
+			if(win != null) win.pack();
+		}
 	}
 	public void selectTerm(Term selected) {
-		//Reset border of currently selected term
+		//Reset border of currently selected Term
 		if(selectedTerm != null)
 			selectedTerm.view.setBorder(BorderFactory.createEmptyBorder());
-		
+
+		//Deselect the Term if already selected
+		if(selectedTerm == selected) {
+			selectedTerm = null;
+			termSelected = false;
 		//Set the currently selected term and apply a border
-		selectedTerm = selected;
-		selectedTerm.view.setBorder(BorderFactory.createLoweredBevelBorder());
+		} else {
+			selectedTerm = selected;
+			termSelected = true;
+			selectedTerm.view.setBorder(BorderFactory.createLoweredBevelBorder());
+		}
 	}
-	//Returns true if a term is selected
-	public Boolean editTerm() {
-		if(this.selectedTerm != null) {
+	//Returns true if a Term is selected
+	public void editTerm() {
+		if(this.selectedTerm != null)
 			selectedTerm.new TermEditor();
-			return true;
-		} else {
-			return false;
+	}
+	//Returns true if a Term is selected
+	public void removeTerm() {
+		if(selectedTerm != null) {
+			//Remove Term
+			remove(selectedTerm.view);
+			terms.remove(selectedTerm);
+
+			//Update view
+			revalidate();
+			
+			//Deselect Term
+			termSelected = false;
 		}
 	}
-	//Returns true if a term is selected
-	public Boolean removeTerm() {
-		if(this.selectedTerm != null) {
-			//this.selectedTerm.
-			return true;
-		} else {
-			return false;
-		}
+	public void updateVariable(String newVariable) {
+		//Update Polynomial variable
+		variable = newVariable;
+
+		//Update each Term's variable
+		for(Term term : terms)
+			term.updateVariable(variable);
+	}
+	public Double eval(int value) {
+		Double sum = (double)0;
+
+		//Find sum of each Term being evaluated
+		for(Term term : terms)
+			sum += term.eval(value);
+
+		return sum;
 	}
 
 	/**
 	 * MouseListener
 	 */
-	public void mouseClicked(MouseEvent e) {
-		//System.out.println("Polynomial clicked!");
-		//System.out.println("mouseClicked: " + e.getComponent().toString());
-		//System.out.println("mouseClicked: " + e.getComponent().getParent().toString());
-	}
+	public void mouseClicked(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}

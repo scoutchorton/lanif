@@ -45,13 +45,28 @@ public class Term {
 	}
 
 	/**
+	 * Methods
+	 */
+	public void updateVariable(String newVariable) {
+		variable = newVariable;
+		view.update();
+	}
+	public Double eval(int value) {
+		// -~= Maths =~-
+		Double result = Math.pow((double)value, (double)exponent);
+		result *= coefficient;
+
+		return result;
+	}
+
+	/**
 	 * Inner classes
 	 */
 	public class TermView extends JLabel implements MouseListener {
 		/**
 		 * Fields
 		 */
-		private final Term term = Term.this;
+		//private final Term term = Term.this;
 
 		/**
 		 * Constructors
@@ -97,7 +112,7 @@ public class Term {
 
 			//Select Term if it's part of a Polynomial
 			if(targetParent.getClass() == Polynomial.class)
-				((Polynomial)targetParent).selectTerm(this.term);
+				((Polynomial)targetParent).selectTerm(Term.this);
 		}
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseExited(MouseEvent e) {}
@@ -109,8 +124,6 @@ public class Term {
 		/**
 		 * Fields
 		 */
-		//private JPanel contentPane;
-		private final Term term = Term.this;
 		private JSpinner exponent;
 		private JSpinner coefficient;
 
