@@ -4,6 +4,7 @@ import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.Color;
@@ -25,7 +26,7 @@ public class Lanif extends JFrame {
 	 */
 	public static void initGUI() {
 		//Create window and panel to add elements to
-		Lanif win = new Lanif("LANIF");
+		Lanif win = new Lanif("Lanif");
 		Box contentPane = new Box(BoxLayout.Y_AXIS);
 
 		//Create and add Polynomial
@@ -67,27 +68,25 @@ public class Lanif extends JFrame {
 		 * Constructors
 		 */
 		MenuButtons(Polynomial polynomialRef) {
-			this.polyref = polynomialRef;
+			polyref = polynomialRef;
 
 			//Initalize components
-			this.addTerm = new JButton("Add Term");
-			this.addTerm.addActionListener(this);
-			this.addTerm.setActionCommand("add_term");
+			addTerm = new JButton("Add Term");
+			addTerm.addActionListener(this);
+			addTerm.setActionCommand("add_term");
 
-			this.editTerm = new JButton("Edit Term");
-			this.editTerm.setEnabled(false);
-			this.editTerm.addActionListener(this);
-			this.editTerm.setActionCommand("remove_term");
+			editTerm = new JButton("Edit Term");
+			editTerm.addActionListener(this);
+			editTerm.setActionCommand("edit_term");
 
-			this.removeTerm = new JButton("Remove Term");
-			this.removeTerm.setEnabled(false);
-			this.removeTerm.addActionListener(this);
-			this.removeTerm.setActionCommand("remove_term");
+			removeTerm = new JButton("Remove Term");
+			removeTerm.addActionListener(this);
+			removeTerm.setActionCommand("remove_term");
 
 			//Add components to JPanel
-			this.add(this.addTerm);
-			this.add(this.editTerm);
-			this.add(this.removeTerm);
+			add(addTerm);
+			add(editTerm);
+			add(removeTerm);
 		}
 
 		/**
@@ -95,7 +94,19 @@ public class Lanif extends JFrame {
 		 */
 		public void actionPerformed(ActionEvent e) {
 			if(e.getActionCommand() == "add_term") {
-				this.polyref.AddTerm();
+				polyref.addTerm();
+			} else if(e.getActionCommand() == "edit_term") {
+				Boolean success = polyref.editTerm();
+
+				//Display an error when nothing is selected
+				if(!success)
+					JOptionPane.showMessageDialog(this, "No term is selected to edit.", "Lanif Errro", JOptionPane.ERROR_MESSAGE);
+			} else if(e.getActionCommand() == "remove_term") {
+				Boolean success = polyref.removeTerm();
+
+				//Display an error when nothing is selected
+				if(!success)
+					JOptionPane.showMessageDialog(this, "No term is selected to remove.", "Lanif Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

@@ -1,32 +1,31 @@
 package io.scoutchorton.lanif.components;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
+import java.awt.Container;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-public class Term extends JPanel implements MouseListener {
+public class Term {
 	/**
 	 * Fields
 	 */
-	//Exponent
-	protected int exponent;
-	protected JSpinner exponentArea;
-
-	//Coefficient
-	protected int coefficient;
-	protected JSpinner coefficientArea;
-
-	//Variable
-	protected String variable;
-	protected JLabel variableArea;
+	//Model
+	private int exponent;
+	private int coefficient;
+	private String variable;
+	public TermView view;
 
 	/**
 	 * Constructors
@@ -35,62 +34,112 @@ public class Term extends JPanel implements MouseListener {
 		this("x");
 	}
 	public Term(String var) {
-		//Initalize panel utilizing the GridBag layout 
-		super(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-
-		//Initalize model variables
-		this.exponent = 1;
-		this.coefficient = 1;
-		this.variable = var;
-
-		//Initalize view variables
-		SpinnerNumberModel exponentNumberModel = new SpinnerNumberModel();
-		exponentNumberModel.setValue(this.exponent);
-		this.exponentArea = new JSpinner(exponentNumberModel);
-
-		SpinnerNumberModel coefficientNumberModel = new SpinnerNumberModel();
-		coefficientNumberModel.setValue(this.coefficient);
-		this.coefficientArea = new JSpinner(coefficientNumberModel);
-		
-		this.variableArea = new JLabel(this.variable);
-		
-		//Set half height font
-		Font exponentFont = exponentArea.getFont();
-		Font newExponentFont = new Font(exponentFont.getName(), exponentFont.getStyle(), (int)(exponentFont.getSize() * 0.75));
-		exponentArea.setFont(newExponentFont);
-
-		//Add components to JPanel
-		c.anchor = GridBagConstraints.LINE_END;
-		this.add(this.coefficientArea, c);
-
-		c.insets = new Insets(0, 10, 0, 5);
-		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.LINE_END;
-		this.add(this.variableArea, c);
-		
-		c.insets = new Insets(0, 0, 0, 0);
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.FIRST_LINE_END;
-		this.add(this.exponentArea, c);
+		//Initalize variables
+		exponent = 1;
+		coefficient = 1;
+		variable = var;
+		view = new TermView();
 	}
 
 	/**
-	 * MouseListener
+	 * Subclasses
 	 */
-	public void mouseClicked(MouseEvent e) {
-		System.out.println("mouseClicked: " + e.getComponent().toString());
+	public class TermView extends JLabel implements MouseListener {
+		/**
+		 * Fields
+		 */
+		private final Term term = Term.this;
+
+		/**
+		 * Constructors
+		 */
+		public TermView() {
+			//Initalize JLabel
+			super();
+
+			//Display values
+			update();
+
+			//Add event listeners
+			addMouseListener(this);
+		}
+
+		/**
+		 * Methods
+		 */
+		//Update display with HTML
+		public void update() {
+			//Create String
+			String contentString = new String();
+	
+			//Add data
+			contentString += "<html>";
+			contentString += Integer.toString(Term.this.coefficient);
+			contentString += Term.this.variable;
+			contentString += "<sup>";
+			contentString += Integer.toString(Term.this.exponent);
+			contentString += "</sup>";
+			contentString += "</html>";
+	
+			//Set data to 
+			setText(contentString);
+		}
+
+		/**
+		 * MouseListener
+		 */
+		public void mouseClicked(MouseEvent e) {
+			//Get components
+			//Component target = e.getComponent();
+			Container targetParent = this.getParent();
+
+			//Select Term if it's part of a Polynomial
+			if(targetParent.getClass() == Polynomial.class)
+				((Polynomial)targetParent).selectTerm(this.term);
+		}
+		public void mouseEntered(MouseEvent e) {
+			//System.out.println("mouseEntered: " + e.getComponent().toString());
+		}
+		public void mouseExited(MouseEvent e) {
+			//System.out.println("mouseExited: " + e.getComponent().toString());
+		}
+		public void mousePressed(MouseEvent e) {
+			//System.out.println("mousePressed: " + e.getComponent().toString());
+		}
+		public void mouseReleased(MouseEvent e) {
+			//System.out.println("mouseReleased: " + e.getComponent().toString());
+		}
 	}
-	public void mouseEntered(MouseEvent e) {
-		//System.out.println("mouseEntered: " + e.getComponent().toString());
-	}
-	public void mouseExited(MouseEvent e) {
-		//System.out.println("mouseExited: " + e.getComponent().toString());
-	}
-	public void mousePressed(MouseEvent e) {
-		//System.out.println("mousePressed: " + e.getComponent().toString());
-	}
-	public void mouseReleased(MouseEvent e) {
-		//System.out.println("mouseReleased: " + e.getComponent().toString());
+
+	public class TermEditor extends JFrame implements ActionListener {
+		/**
+		 * Fields
+		 */
+		//private JPanel contentPane;
+		private final Term term = Term.this;
+
+		/**
+		 * Constructors
+		 */
+		TermEditor() {
+			//Initalize components
+			super("Term Editor");
+			Box contentPane = new Box(BoxLayout.Y_AXIS);
+
+			//Initalize and add main editor
+			JPanel editor = new JPanel(new GridBagLayout());
+			GridBagConstraints c = new GridBagConstraints();
+			contentPane.add(editor);
+
+			//Initalize and add save/cancel buttons
+			JPanel buttons = new JPanel();
+			contentPane.add(buttons);
+
+			//Set up and display window
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			setContentPane(contentPane);
+			pack();
+			setVisible(true);
+		}
 	}
 }
