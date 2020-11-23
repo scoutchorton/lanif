@@ -53,7 +53,7 @@ public class Lanif extends JFrame {
 	}
 
 	/**
-	 * Subclasses
+	 * Inner classes
 	 */
 	static private class MenuButtons extends JPanel implements ActionListener {
 		/**

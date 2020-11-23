@@ -99,16 +99,8 @@ public class Polynomial extends JPanel implements MouseListener {
 		//System.out.println("mouseClicked: " + e.getComponent().toString());
 		//System.out.println("mouseClicked: " + e.getComponent().getParent().toString());
 	}
-	public void mouseEntered(MouseEvent e) {
-		//System.out.println("mouseEntered: " + e.getComponent().toString());
-	}
-	public void mouseExited(MouseEvent e) {
-		//System.out.println("mouseExited: " + e.getComponent().toString());
-	}
-	public void mousePressed(MouseEvent e) {
-		//System.out.println("mousePressed: " + e.getComponent().toString());
-	}
-	public void mouseReleased(MouseEvent e) {
-		//System.out.println("mouseReleased: " + e.getComponent().toString());
-	}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
 }

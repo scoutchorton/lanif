@@ -2,16 +2,19 @@ package io.scoutchorton.lanif.components;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import java.awt.Container;
-import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -42,7 +45,7 @@ public class Term {
 	}
 
 	/**
-	 * Subclasses
+	 * Inner classes
 	 */
 	public class TermView extends JLabel implements MouseListener {
 		/**
@@ -90,25 +93,16 @@ public class Term {
 		 */
 		public void mouseClicked(MouseEvent e) {
 			//Get components
-			//Component target = e.getComponent();
 			Container targetParent = this.getParent();
 
 			//Select Term if it's part of a Polynomial
 			if(targetParent.getClass() == Polynomial.class)
 				((Polynomial)targetParent).selectTerm(this.term);
 		}
-		public void mouseEntered(MouseEvent e) {
-			//System.out.println("mouseEntered: " + e.getComponent().toString());
-		}
-		public void mouseExited(MouseEvent e) {
-			//System.out.println("mouseExited: " + e.getComponent().toString());
-		}
-		public void mousePressed(MouseEvent e) {
-			//System.out.println("mousePressed: " + e.getComponent().toString());
-		}
-		public void mouseReleased(MouseEvent e) {
-			//System.out.println("mouseReleased: " + e.getComponent().toString());
-		}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mousePressed(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {}
 	}
 
 	public class TermEditor extends JFrame implements ActionListener {
@@ -117,6 +111,8 @@ public class Term {
 		 */
 		//private JPanel contentPane;
 		private final Term term = Term.this;
+		private JSpinner exponent;
+		private JSpinner coefficient;
 
 		/**
 		 * Constructors
@@ -126,20 +122,75 @@ public class Term {
 			super("Term Editor");
 			Box contentPane = new Box(BoxLayout.Y_AXIS);
 
-			//Initalize and add main editor
+			//Initalize and add main editor to window
 			JPanel editor = new JPanel(new GridBagLayout());
 			GridBagConstraints c = new GridBagConstraints();
-			contentPane.add(editor);
+			contentPane.add(editor, c);
 
-			//Initalize and add save/cancel buttons
+			//Initalize and add coefficient to main editor
+			SpinnerNumberModel coefficientNumberModel = new SpinnerNumberModel(Term.this.coefficient, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+			coefficientNumberModel.setValue(Term.this.coefficient);
+			coefficient = new JSpinner(coefficientNumberModel);
+			c.anchor = GridBagConstraints.LINE_END;
+			editor.add(coefficient, c);
+
+			//Initalize and add variable to main editor
+			c.insets = new Insets(0, 10, 0, 5);
+			c.fill = GridBagConstraints.BOTH;
+			editor.add(new JLabel(Term.this.variable));
+
+			//Initalize and add exponent to main editor
+			SpinnerNumberModel exponentNumberModel = new SpinnerNumberModel(Term.this.exponent, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+			//exponentNumberModel.setValue(Term.this.exponent);
+			exponent = new JSpinner(exponentNumberModel);
+
+			Font exponentFont = exponent.getFont();
+			Font newExponentFont = new Font(exponentFont.getName(), exponentFont.getStyle(), (int)(exponentFont.getSize() * 0.75));
+			exponent.setFont(newExponentFont);
+
+			c.insets = new Insets(0, 0, 0, 0);
+			c.fill = GridBagConstraints.NONE;
+			c.anchor = GridBagConstraints.FIRST_LINE_END;
+			editor.add(exponent, c);
+
+			//Initalize and add save/cancel buttons to window
 			JPanel buttons = new JPanel();
 			contentPane.add(buttons);
 
+			//Initalize and add save button to buttons panel
+			JButton save = new JButton("Save");
+			save.addActionListener(this);
+			save.setActionCommand("save");
+			buttons.add(save);
+			
+			//Initalize and add cancel to buttons panel
+			JButton cancel = new JButton("Cancel");
+			cancel.addActionListener(this);
+			cancel.setActionCommand("cancel");
+			buttons.add(cancel);
+
 			//Set up and display window
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setContentPane(contentPane);
 			pack();
 			setVisible(true);
+		}
+
+		/**
+		 * Methods
+		 */
+		public void actionPerformed(ActionEvent e) {
+			if(e.getActionCommand() == "cancel") {
+				//Close window without saving
+				dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			} else if(e.getActionCommand() == "save") {
+				//Update term variables and view
+				Term.this.exponent = (int)exponent.getValue();
+				Term.this.coefficient = (int)coefficient.getValue();
+				Term.this.view.update();
+
+				//Close window
+				dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			}
 		}
 	}
 }
